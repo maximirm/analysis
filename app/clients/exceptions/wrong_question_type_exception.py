@@ -1,0 +1,2 @@
+class WrongQuestionTypeException(Exception):
+    pass
