@@ -1,4 +1,3 @@
-from collections import Counter
 from uuid import UUID
 
 from app.clients import client
@@ -39,6 +38,6 @@ def __analyze_respondents(question: Question):
 
 def __analyze_responses(question):
     question.analysis_responses = {
-        option: Counter(response.response_text.count(option) for response in question.responses)
+        option: sum(response.response_text.count(option) for response in question.responses)
         for option in question.options
     }
