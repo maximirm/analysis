@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import AsyncMock
 from uuid import UUID
 from app.clients import client
-from app.clients.exceptions.no_response_exception import NoResponseException
+from app.clients.exceptions.no_responses_exception import NoResponsesException
 from app.clients.exceptions.wrong_question_type_exception import WrongQuestionTypeException
 from app.clients.schemas.schemas import Question, Response, QuestionAnalyzed
 from app.services.analysis_service import analyze_question
@@ -74,7 +74,7 @@ class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
         mock_fetch_question = AsyncMock(return_value=mock_question)
         client.fetch_question = mock_fetch_question
 
-        with self.assertRaises(NoResponseException):
+        with self.assertRaises(NoResponsesException):
             await analyze_question(UUID('ceb68515-4cee-43b4-8943-b7931af93633'))
 
         mock_fetch_question.assert_called_once_with(UUID('ceb68515-4cee-43b4-8943-b7931af93633'))

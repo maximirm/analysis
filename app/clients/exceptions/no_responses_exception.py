@@ -1,0 +1,2 @@
+class NoResponsesException(Exception):
+    pass

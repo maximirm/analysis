@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from app.clients import client
-from app.clients.exceptions.no_response_exception import NoResponseException
+from app.clients.exceptions.no_responses_exception import NoResponsesException
 from app.clients.exceptions.wrong_question_type_exception import WrongQuestionTypeException
 from app.clients.schemas.schemas import Question, QuestionAnalyzed
 
@@ -14,7 +14,7 @@ async def analyze_question(question_id: UUID) -> QuestionAnalyzed:
             f"Question with id {question_id} has the wrong type for this analysis. type {question.type}"
         )
     if not question.responses:
-        raise NoResponseException(
+        raise NoResponsesException(
             f"No responses found for question with id {question_id}"
         )
 

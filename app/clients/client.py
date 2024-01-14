@@ -3,8 +3,6 @@ from uuid import UUID
 
 import httpx
 
-from fastapi import HTTPException
-
 from app.clients.exceptions.question_not_found_exception import QuestionNotFoundException
 from app.clients.schemas.schemas import Question
 
