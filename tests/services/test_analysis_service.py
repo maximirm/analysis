@@ -1,11 +1,10 @@
 import unittest
-from unittest.mock import AsyncMock
 from uuid import UUID
-from app.clients import client
-from app.services.exceptions.no_responses_exception import NoResponsesException
-from app.services.exceptions import WrongQuestionTypeException
-from app.services.schemas import Question, Response, QuestionAnalyzed
+
+from fastapi import HTTPException
+
 from app.services.analysis_service import analyze_question
+from app.services.schemas.schemas import Question, Response, QuestionAnalyzed
 
 
 class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
@@ -35,15 +34,11 @@ class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
                     response_text=["Red", "Green", "Blue", "Yellow"]),
             ]
         )
-        mock_fetch_question = AsyncMock(return_value=mock_question)
-        client.fetch_question = mock_fetch_question
-
-        result = await analyze_question(UUID('ceb68515-4cee-43b4-8943-b7931af93633'))
+        result = await analyze_question(mock_question)
 
         self.assertIsInstance(result, QuestionAnalyzed)
         self.assertEqual({'total': 3, 'anonym': 2}, result.analysis_respondents)
         self.assertEqual({'Red': 3, 'Blue': 2, 'Green': 2, 'Yellow': 1}, result.analysis_responses)
-        mock_fetch_question.assert_called_once_with(UUID('ceb68515-4cee-43b4-8943-b7931af93633'))
 
     async def test_analyze_question_wrong_type(self):
         mock_question = Question(
@@ -53,13 +48,9 @@ class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
             question_text="What is your favorite color?",
             type=1
         )
-        mock_fetch_question = AsyncMock(return_value=mock_question)
-        client.fetch_question = mock_fetch_question
 
-        with self.assertRaises(WrongQuestionTypeException):
-            await analyze_question(UUID('ceb68515-4cee-43b4-8943-b7931af93633'))
-
-        mock_fetch_question.assert_called_once_with(UUID('ceb68515-4cee-43b4-8943-b7931af93633'))
+        with self.assertRaises(HTTPException):
+            await analyze_question(mock_question)
 
     async def test_analyze_question_no_responses(self):
         mock_question = Question(
@@ -71,10 +62,6 @@ class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
             options=["Red", "Blue", "Green", "Yellow"],
             responses=[]
         )
-        mock_fetch_question = AsyncMock(return_value=mock_question)
-        client.fetch_question = mock_fetch_question
 
-        with self.assertRaises(NoResponsesException):
-            await analyze_question(UUID('ceb68515-4cee-43b4-8943-b7931af93633'))
-
-        mock_fetch_question.assert_called_once_with(UUID('ceb68515-4cee-43b4-8943-b7931af93633'))
+        with self.assertRaises(HTTPException):
+            await analyze_question(mock_question)
