@@ -1,23 +1,19 @@
-from uuid import UUID
+from fastapi import HTTPException
 
-from app.clients import client
-from app.clients.exceptions.no_responses_exception import NoResponsesException
-from app.clients.exceptions.wrong_question_type_exception import WrongQuestionTypeException
-from app.clients.schemas.schemas import Question, QuestionAnalyzed
+from app.services.schemas.schemas import Question, QuestionAnalyzed
 
 
-async def analyze_question(question_id: UUID) -> QuestionAnalyzed:
-    question = await client.fetch_question(question_id)
-
+async def analyze_question(question: Question) -> QuestionAnalyzed:
     if not __question_type_is_valid(question.type):
-        raise WrongQuestionTypeException(
-            f"Question with id {question_id} has the wrong type for this analysis. type {question.type}"
+        raise HTTPException(
+            status_code=400,
+            detail=f"Question with id {question.id} has the wrong type for this analysis. type {question.type}"
         )
     if not question.responses:
-        raise NoResponsesException(
-            f"No responses found for question with id {question_id}"
+        raise HTTPException(
+            status_code=404,
+            detail=f"No responses found for question with id {question.id}"
         )
-
     analyzed_question = QuestionAnalyzed(
         **dict(question),
         analysis_responses=__analyze_responses(question),

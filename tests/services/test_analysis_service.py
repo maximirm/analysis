@@ -2,9 +2,9 @@ import unittest
 from unittest.mock import AsyncMock
 from uuid import UUID
 from app.clients import client
-from app.clients.exceptions.no_responses_exception import NoResponsesException
-from app.clients.exceptions.wrong_question_type_exception import WrongQuestionTypeException
-from app.clients.schemas.schemas import Question, Response, QuestionAnalyzed
+from app.services.exceptions.no_responses_exception import NoResponsesException
+from app.services.exceptions import WrongQuestionTypeException
+from app.services.schemas import Question, Response, QuestionAnalyzed
 from app.services.analysis_service import analyze_question
 
 
