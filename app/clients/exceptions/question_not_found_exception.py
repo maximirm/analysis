@@ -1,2 +1,0 @@
-class QuestionNotFoundException(Exception):
-    pass

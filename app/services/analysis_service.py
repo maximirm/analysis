@@ -8,8 +8,15 @@ from app.clients.schemas.schemas import Question, QuestionAnalyzed
 
 async def analyze_question(question_id: UUID) -> QuestionAnalyzed:
     question = await client.fetch_question(question_id)
-    __check_question_type(question, question_id)
-    __check_question_responses(question, question_id)
+
+    if not __question_type_is_valid(question.type):
+        raise WrongQuestionTypeException(
+            f"Question with id {question_id} has the wrong type for this analysis. type {question.type}"
+        )
+    if not question.responses:
+        raise NoResponseException(
+            f"No responses found for question with id {question_id}"
+        )
 
     analyzed_question = QuestionAnalyzed(
         **dict(question),
@@ -18,20 +25,6 @@ async def analyze_question(question_id: UUID) -> QuestionAnalyzed:
     )
 
     return analyzed_question
-
-
-def __check_question_type(question, question_id):
-    if not __question_type_is_valid(question.type):
-        raise WrongQuestionTypeException(
-            f"Question with id {question_id} has the wrong type for this analysis. type {question.type}"
-        )
-
-
-def __check_question_responses(question, question_id):
-    if not question.responses:
-        raise NoResponseException(
-            f"No responses found for question with id {question_id}"
-        )
 
 
 def __question_type_is_valid(question_type: int) -> bool:
