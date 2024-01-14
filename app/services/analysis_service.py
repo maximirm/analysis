@@ -3,16 +3,21 @@ from uuid import UUID
 from app.clients import client
 from app.clients.exceptions.no_response_exception import NoResponseException
 from app.clients.exceptions.wrong_question_type_exception import WrongQuestionTypeException
-from app.clients.schemas.schemas import Question
+from app.clients.schemas.schemas import Question, QuestionAnalyzed
 
 
-async def analyze_question(question_id: UUID) -> Question:
+async def analyze_question(question_id: UUID) -> QuestionAnalyzed:
     question = await client.fetch_question(question_id)
     __check_question_type(question, question_id)
     __check_question_responses(question, question_id)
-    __analyze_respondents(question)
-    __analyze_responses(question)
-    return question
+
+    analyzed_question = QuestionAnalyzed(
+        **dict(question),
+        analysis_responses=__analyze_responses(question),
+        analysis_respondents=__analyze_respondents(question)
+    )
+
+    return analyzed_question
 
 
 def __check_question_type(question, question_id):
@@ -36,14 +41,14 @@ def __question_type_is_valid(question_type: int) -> bool:
 def __analyze_respondents(question: Question):
     total_responses = len(question.responses)
     anonym_responses = sum(1 for response in question.responses if response.respondent_id is None)
-    question.analysis_respondents = {
+    return {
         'total': total_responses,
         'anonym': anonym_responses
     }
 
 
 def __analyze_responses(question):
-    question.analysis_responses = {
+    return {
         option: sum(response.response_text.count(option) for response in question.responses)
         for option in question.options
     }

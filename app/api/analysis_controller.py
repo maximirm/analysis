@@ -13,7 +13,7 @@ from app.services import analysis_service
 router = APIRouter()
 
 
-@router.get("/analyze/question/{question_id}", response_model=schemas.Question)
+@router.get("/analyze/question/{question_id}", response_model=schemas.QuestionAnalyzed)
 async def analyze_question(question_id: UUID):
     try:
         return await analysis_service.analyze_question(question_id)

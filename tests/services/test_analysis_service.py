@@ -4,7 +4,7 @@ from uuid import UUID
 from app.clients import client
 from app.clients.exceptions.no_response_exception import NoResponseException
 from app.clients.exceptions.wrong_question_type_exception import WrongQuestionTypeException
-from app.clients.schemas.schemas import Question, Response
+from app.clients.schemas.schemas import Question, Response, QuestionAnalyzed
 from app.services.analysis_service import analyze_question
 
 
@@ -40,7 +40,7 @@ class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
 
         result = await analyze_question(UUID('ceb68515-4cee-43b4-8943-b7931af93633'))
 
-        self.assertEqual(result, mock_question)
+        self.assertIsInstance(result, QuestionAnalyzed)
         self.assertEqual({'total': 3, 'anonym': 2}, result.analysis_respondents)
         self.assertEqual({'Red': 3, 'Blue': 2, 'Green': 2, 'Yellow': 1}, result.analysis_responses)
         mock_fetch_question.assert_called_once_with(UUID('ceb68515-4cee-43b4-8943-b7931af93633'))

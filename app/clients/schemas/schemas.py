@@ -8,9 +8,6 @@ class Response(BaseModel):
     respondent_id: Optional[UUID4] = None
     response_text: List[str]
 
-    class Config:
-        from_attributes = True
-
 
 class Question(BaseModel):
     id: UUID4
@@ -20,11 +17,11 @@ class Question(BaseModel):
     type: int
     options: Optional[List[str]] = None
     responses: list[Response] = []
-    analysis_responses: Optional[dict] = None
-    analysis_respondents: int = None
 
-    class Config:
-        from_attributes = True
+
+class QuestionAnalyzed(Question):
+    analysis_responses: Optional[dict] = None
+    analysis_respondents: Optional[dict] = None
 
 
 class Survey(BaseModel):
@@ -33,6 +30,3 @@ class Survey(BaseModel):
     title: str
     description: str
     questions: list[Question] = []
-
-    class Config:
-        from_attributes = True
