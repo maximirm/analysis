@@ -31,8 +31,8 @@ def __analyze_respondents(question: Question):
     total_responses = len(question.responses)
     anonym_responses = sum(1 for response in question.responses if response.respondent_id is None)
     return {
-        'total': total_responses,
-        'anonym': anonym_responses
+        'Total': total_responses,
+        'Anonym': anonym_responses
     }
 
 
