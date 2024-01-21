@@ -10,9 +10,9 @@ class TestIntegration(unittest.TestCase):
         self.client = TestClient(app)
 
     def test_analyze_question_valid(self):
-        question_id = uuid4()
+        question_id = str(uuid4())
         question_data = {
-            "id": str(question_id),
+            "id": question_id,
             "survey_id": str(uuid4()),
             "order": 2,
             "question_text": "What is your favorite color?",
@@ -21,19 +21,19 @@ class TestIntegration(unittest.TestCase):
             "responses": [
                 {
                     "id": str(uuid4()),
-                    "question_id": str(question_id),
+                    "question_id": question_id,
                     "respondent_id": None,
                     "response_text": ["Red", "Blue"]
                 },
                 {
                     "id": str(uuid4()),
-                    "question_id": str(question_id),
+                    "question_id": question_id,
                     "respondent_id": None,
                     "response_text": ["Red", "Green"]
                 },
                 {
                     "id": str(uuid4()),
-                    "question_id": str(question_id),
+                    "question_id": question_id,
                     "respondent_id": str(uuid4()),
                     "response_text": ["Red", "Green", "Blue", "Yellow"]
                 }
@@ -50,8 +50,8 @@ class TestIntegration(unittest.TestCase):
     def test_analyze_question_wrong_type(self):
         wrong_type = 1
         question_data = {
-            "id": "ceb68515-4cee-43b4-8943-b7931af93633",
-            "survey_id": "d03b04f7-4c03-4e8e-b9a1-60d9bebe7b14",
+            "id": str(uuid4()),
+            "survey_id": str(uuid4()),
             "order": 2,
             "question_text": "What is your favorite color?",
             "type": wrong_type
@@ -64,8 +64,8 @@ class TestIntegration(unittest.TestCase):
     def test_analyze_question_no_responses(self):
         no_responses = []
         question_data = {
-            "id": "ceb68515-4cee-43b4-8943-b7931af93633",
-            "survey_id": "d03b04f7-4c03-4e8e-b9a1-60d9bebe7b14",
+            "id": str(uuid4()),
+            "survey_id": str(uuid4()),
             "order": 2,
             "question_text": "What is your favorite color?",
             "type": 2,

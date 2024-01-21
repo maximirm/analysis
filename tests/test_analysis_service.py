@@ -9,29 +9,29 @@ from app.services.schemas.schemas import Question, Response, AnalyzedQuestion
 
 class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
     async def test_analyze_question_with_valid_data(self):
-        question_id = uuid4()
+        question_id = str(uuid4())
         mock_question = Question(
             id=question_id,
-            survey_id=uuid4(),
+            survey_id=str(uuid4()),
             order=2,
             question_text="What is your favorite color?",
             type=2,
             options=["Red", "Blue", "Green", "Yellow"],
             responses=[
                 Response(
-                    id=uuid4(),
+                    id=str(uuid4()),
                     question_id=question_id,
                     respondent_id=None,
                     response_text=["Red", "Blue"]),
                 Response(
-                    id=uuid4(),
+                    id=str(uuid4()),
                     question_id=question_id,
                     respondent_id=None,
                     response_text=["Red", "Green"]),
                 Response(
-                    id=uuid4(),
+                    id=str(uuid4()),
                     question_id=question_id,
-                    respondent_id=uuid4(),
+                    respondent_id=str(uuid4()),
                     response_text=["Red", "Green", "Blue", "Yellow"]),
             ]
         )
@@ -43,8 +43,8 @@ class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
 
     async def test_analyze_question_wrong_type(self):
         mock_question = Question(
-            id=uuid4(),
-            survey_id=uuid4(),
+            id=str(uuid4()),
+            survey_id=str(uuid4()),
             order=2,
             question_text="What is your favorite color?",
             type=1
@@ -55,8 +55,8 @@ class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
 
     async def test_analyze_question_no_responses(self):
         mock_question = Question(
-            id=uuid4(),
-            survey_id=uuid4(),
+            id=str(uuid4()),
+            survey_id=str(uuid4()),
             order=2,
             question_text="What is your favorite color?",
             type=2,
