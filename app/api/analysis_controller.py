@@ -6,6 +6,6 @@ from app.services.schemas import schemas
 router = APIRouter()
 
 
-@router.post("/analyze/question/", response_model=schemas.QuestionAnalyzed)
+@router.post("/analyze/question/", response_model=schemas.AnalyzedQuestion)
 async def analyze_question(question: schemas.Question):
     return await analysis_service.analyze_question(question)

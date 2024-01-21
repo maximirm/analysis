@@ -19,7 +19,7 @@ class Question(BaseModel):
     responses: list[Response] = []
 
 
-class QuestionAnalyzed(Question):
+class AnalyzedQuestion(Question):
     analysis_responses: Optional[dict] = None
     analysis_respondents: Optional[dict] = None
 
