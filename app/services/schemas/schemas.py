@@ -1,5 +1,6 @@
-from pydantic import BaseModel, UUID4
 from typing import Optional, List
+
+from pydantic import BaseModel, UUID4
 
 
 class Response(BaseModel):
@@ -23,4 +24,28 @@ class AnalyzedQuestion(Question):
     analysis_responses: Optional[dict] = None
     analysis_respondents: Optional[dict] = None
 
+
+class Survey(BaseModel):
+    creator_id: UUID4
+    title: str
+    description: str
+    id: UUID4
+    questions: list[Question] = []
+
+
+class AnalyzedSurvey(BaseModel):
+    creator_id: UUID4
+    title: str
+    description: str
+    id: UUID4
+    analyzed_questions: list[AnalyzedQuestion] = []
+
+    @classmethod
+    def from_survey(cls, survey: Survey):
+        return cls(
+            creator_id=survey.creator_id,
+            title=survey.title,
+            description=survey.description,
+            id=survey.id
+        )
 

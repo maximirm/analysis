@@ -2,19 +2,23 @@ from typing import Dict
 
 from fastapi import HTTPException
 
-from app.services.schemas.schemas import Question, AnalyzedQuestion
+from app.services.schemas.schemas import Question, AnalyzedQuestion, AnalyzedSurvey, Survey
+
+
+async def analyze_survey(survey: Survey) -> AnalyzedSurvey:
+    analyzed_survey = AnalyzedSurvey.from_survey(survey)
+    for question in survey.questions:
+        analyzed_question = await analyze_question(question)
+        analyzed_survey.analyzed_questions.append(analyzed_question)
+    return analyzed_survey
 
 
 async def analyze_question(question: Question) -> AnalyzedQuestion:
-    if not __question_type_is_valid(question.type):
-        raise HTTPException(
-            status_code=422,
-            detail=f"Question with id {question.id} has the wrong type for this analysis. type {question.type}"
-        )
     if not question.responses:
-        raise HTTPException(
-            status_code=404,
-            detail=f"No responses found for question with id {question.id}"
+        return AnalyzedQuestion(
+            **dict(question),
+            analysis_responses={},
+            analysis_respondents={}
         )
     analyzed_question = AnalyzedQuestion(
         **dict(question),
@@ -25,8 +29,8 @@ async def analyze_question(question: Question) -> AnalyzedQuestion:
     return analyzed_question
 
 
-def __question_type_is_valid(question_type: int) -> bool:
-    return question_type in {2, 3}
+def __is_freetext_question(question_type: int) -> bool:
+    return question_type == 1
 
 
 def __analyze_respondents(question: Question) -> Dict[str, int]:
@@ -39,6 +43,8 @@ def __analyze_respondents(question: Question) -> Dict[str, int]:
 
 
 def __analyze_responses(question: Question) -> Dict[str, int]:
+    if __is_freetext_question(question.type):
+        return {}
     response_texts = [response.response_text for response in question.responses]
     return {
         option: sum(response_text.count(option) for response_text in response_texts)
