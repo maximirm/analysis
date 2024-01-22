@@ -1,7 +1,5 @@
 from typing import Dict
 
-from fastapi import HTTPException
-
 from app.services.schemas.schemas import Question, AnalyzedQuestion, AnalyzedSurvey, Survey
 
 
@@ -14,19 +12,16 @@ async def analyze_survey(survey: Survey) -> AnalyzedSurvey:
 
 
 async def analyze_question(question: Question) -> AnalyzedQuestion:
-    if not question.responses:
-        return AnalyzedQuestion(
-            **dict(question),
-            analysis_responses={},
-            analysis_respondents={}
-        )
-    analyzed_question = AnalyzedQuestion(
-        **dict(question),
-        analysis_responses=__analyze_responses(question),
-        analysis_respondents=__analyze_respondents(question)
-    )
+    analyzed_responses = {} if __is_freetext_question(question.type) or not question.responses \
+        else __analyze_responses(question)
+    analyzed_respondents = {} if not question.responses \
+        else __analyze_respondents(question)
 
-    return analyzed_question
+    return AnalyzedQuestion(
+        **dict(question),
+        analysis_responses=analyzed_responses,
+        analysis_respondents=analyzed_respondents
+    )
 
 
 def __is_freetext_question(question_type: int) -> bool:
@@ -43,8 +38,6 @@ def __analyze_respondents(question: Question) -> Dict[str, int]:
 
 
 def __analyze_responses(question: Question) -> Dict[str, int]:
-    if __is_freetext_question(question.type):
-        return {}
     response_texts = [response.response_text for response in question.responses]
     return {
         option: sum(response_text.count(option) for response_text in response_texts)
