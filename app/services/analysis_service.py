@@ -1,14 +1,6 @@
 from typing import Dict
 
-from app.services.schemas.schemas import Question, AnalyzedQuestion, AnalyzedSurvey, Survey
-
-
-async def analyze_survey(survey: Survey) -> AnalyzedSurvey:
-    analyzed_survey = AnalyzedSurvey.from_survey(survey)
-    for question in survey.questions:
-        analyzed_question = await analyze_question(question)
-        analyzed_survey.analyzed_questions.append(analyzed_question)
-    return analyzed_survey
+from app.services.schemas.schemas import Question, AnalyzedQuestion
 
 
 async def analyze_question(question: Question) -> AnalyzedQuestion:
