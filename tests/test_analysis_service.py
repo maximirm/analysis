@@ -37,7 +37,7 @@ class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
         result = await analyze_question(mock_question)
 
         self.assertIsInstance(result, AnalyzedQuestion)
-        self.assertEqual({'Total': 3, 'Anonym': 2}, result.analysis_respondents)
+        self.assertEqual({'Anonymous Users': 2, 'Signed in Users': 1}, result.analysis_respondents)
         self.assertEqual({'Red': 3, 'Blue': 2, 'Green': 2, 'Yellow': 1}, result.analysis_responses)
 
     async def test_analyze_question_wrong_type(self):
@@ -71,7 +71,7 @@ class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
         result = await analyze_question(mock_question)
 
         self.assertIsInstance(result, AnalyzedQuestion)
-        self.assertEqual({'Total': 3, 'Anonym': 2}, result.analysis_respondents)
+        self.assertEqual({'Anonymous Users': 2, 'Signed in Users': 1}, result.analysis_respondents)
         self.assertEqual({}, result.analysis_responses)
 
     async def test_analyze_question_no_responses(self):

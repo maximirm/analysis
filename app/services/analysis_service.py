@@ -21,11 +21,11 @@ def __is_freetext_question(question_type: int) -> bool:
 
 
 def __analyze_respondents(question: Question) -> Dict[str, int]:
-    total_responses = len(question.responses)
     anonym_responses = sum(1 for response in question.responses if response.respondent_id is None)
+    logged_in_responses = len(question.responses) - anonym_responses
     return {
-        'Total': total_responses,
-        'Anonym': anonym_responses
+        'Anonymous Users': anonym_responses,
+        'Signed in Users': logged_in_responses
     }
 
 
