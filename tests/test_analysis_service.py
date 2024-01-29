@@ -40,15 +40,15 @@ class TestAnalysisService(unittest.IsolatedAsyncioTestCase):
         self.assertEqual({'Anonymous Users': 2, 'Signed in Users': 1}, result.analysis_respondents)
         self.assertEqual({'Red': 3, 'Blue': 2, 'Green': 2, 'Yellow': 1}, result.analysis_responses)
 
-    async def test_analyze_question_wrong_type(self):
-        wrong_type = 1
+    async def test_analyze_free_text_question(self):
+        question_type_free_text = 1
         question_id = str(uuid4())
         mock_question = Question(
             id=question_id,
             survey_id=str(uuid4()),
             order=2,
             question_text="What is your favorite color?",
-            type=wrong_type,
+            type=question_type_free_text,
             options=[],
             responses=[
                 Response(

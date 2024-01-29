@@ -11,7 +11,7 @@ class TestIntegration(unittest.TestCase):
     def setUp(self):
         self.client = TestClient(app)
 
-    def test_analyze_question_valid(self):
+    def test_analyze_question(self):
         question_id = str(uuid4())
         question_data = {
             "id": question_id,
@@ -46,18 +46,18 @@ class TestIntegration(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         analyzed_question = AnalyzedQuestion(**response.json())
-        self.assertEqual(analyzed_question.analysis_respondents, {"Total": 3, "Anonym": 2})
-        self.assertEqual(analyzed_question.analysis_responses, {"Red": 3, "Blue": 2, "Green": 2, "Yellow": 1})
+        self.assertEqual({'Anonymous Users': 2, 'Signed in Users': 1}, analyzed_question.analysis_respondents)
+        self.assertEqual({"Red": 3, "Blue": 2, "Green": 2, "Yellow": 1}, analyzed_question.analysis_responses)
 
-    def test_analyze_question_wrong_type(self):
-        wrong_type = 1
+    def test_analyze_free_text_question(self):
+        question_type_free_text = 1
         question_id = str(uuid4())
         question_data = {
             "id": question_id,
             "survey_id": str(uuid4()),
             "order": 2,
             "question_text": "What is your favorite color?",
-            "type": wrong_type,
+            "type": question_type_free_text,
             "options": ["Red", "Blue", "Green", "Yellow"],
             "responses": [
                 {
@@ -85,7 +85,7 @@ class TestIntegration(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         analyzed_question = AnalyzedQuestion(**response.json())
-        self.assertEqual({"Total": 3, "Anonym": 2}, analyzed_question.analysis_respondents)
+        self.assertEqual({'Anonymous Users': 2, 'Signed in Users': 1}, analyzed_question.analysis_respondents)
         self.assertEqual({}, analyzed_question.analysis_responses)
 
     def test_analyze_question_no_responses(self):
